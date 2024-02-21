@@ -1,8 +1,7 @@
 import scrape from "./../index.js";
 
-scrape("1005005167379524", {
-  reviewsCount: 20,
-  rating: 2,
+scrape("3256806058582491", {
+  reviewsCount: 0,
 })
   .then((productData) => {
     console.log(JSON.stringify(productData, null, 2));

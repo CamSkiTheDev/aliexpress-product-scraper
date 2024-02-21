@@ -1,9 +1,12 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
 import * as cheerio from "cheerio";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 import { get as GetVariants } from "./variants.js";
 import { get as GetReviews } from "./reviews.js";
 import { get as GetShippingDetails } from "./shipping.js";
+
+puppeteer.use(StealthPlugin());
 
 const AliexpressProductScraper = async (
   id,
