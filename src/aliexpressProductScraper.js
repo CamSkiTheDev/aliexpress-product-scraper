@@ -47,7 +47,7 @@ const AliexpressProductScraper = async (
   try {
     const REVIEWS_COUNT = reviewsCount || 20;
     browser = await puppeteer.launch({
-      headless: process.env.HEADLESS,
+      headless: process.env.HEADLESS || "new",
       ...(puppeteerOptions || {}),
     });
     const page = await browser.newPage();
