@@ -6,33 +6,11 @@ import dotenv from "dotenv";
 import { get as GetVariants } from "./variants.js";
 import { get as GetReviews } from "./reviews.js";
 import { get as GetShippingDetails } from "./shipping.js";
-import fs from "fs";
+import login from "./login.js";
 
 dotenv.config();
 
 puppeteer.use(StealthPlugin());
-
-export const AliexpressLogin = async (page) => {
-  await page.goto("https://www.aliexpress.com/account/index.html");
-
-  await page.waitForSelector('input[id="fm-login-id"]');
-
-  await page.type('input[id="fm-login-id"]', process.env.ALI_EMAIL);
-
-  await page.waitForSelector('input[id="fm-login-password"]');
-
-  await page.type('input[id="fm-login-password"]', process.env.ALI_PASS);
-
-  await page.waitForSelector('button[type="submit"]');
-
-  await page.click('button[type="submit"]');
-
-  setTimeout(async () => {
-    const cookies = await page.cookies();
-    await fs.writeFileSync("./cookies.json", JSON.stringify(cookies, null, 2));
-    return setTimeout(() => browser.close(), 2000);
-  }, 5000);
-};
 
 const AliexpressProductScraper = async (
   id,
@@ -47,25 +25,18 @@ const AliexpressProductScraper = async (
   try {
     const REVIEWS_COUNT = reviewsCount || 20;
     browser = await puppeteer.launch({
-      headless: process.env.HEADLESS || "new",
+      headless: process.env.HEADLESS == "false" ? false : "new",
       ...(puppeteerOptions || {}),
     });
     const page = await browser.newPage();
 
-    if (fs.existsSync("./cookies.json")) {
-      const cookiesString = await fs.readFileSync("./cookies.json");
-      const cookies = JSON.parse(cookiesString);
-      await page.setCookie(...cookies);
-    } else {
-      if (process.env.LOGIN_TO_ALI) return AliexpressLogin(page);
-    }
+    /** Login to aliexpress */
+    await login(page);
 
     /** Scrape the aliexpress product page for details */
     await page.goto(`https://www.aliexpress.com/item/${id}.html`, {
       timeout: 0,
     });
-
-    await page.waitForNetworkIdle();
 
     const aliExpressData = await page.evaluate(() => runParams);
 
@@ -101,7 +72,7 @@ const AliexpressProductScraper = async (
       reviewsPromise,
     ]);
 
-    // await browser.close();
+    await browser.close();
 
     /** Build the JSON response with aliexpress product details */
     const json = {
