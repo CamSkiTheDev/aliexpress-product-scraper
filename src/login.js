@@ -60,12 +60,12 @@ const login = async (page) => {
 
       if (value.length < 1 && process.env.LOGIN_TO_ALI) {
         await AliexpressLogin(page);
-      } else {
-        if (process.env.LOGIN_TO_ALI) await AliexpressLogin(page);
       }
     } catch (error) {
       if (process.env.LOGIN_TO_ALI) await AliexpressLogin(page);
     }
+  } else {
+    if (process.env.LOGIN_TO_ALI) await AliexpressLogin(page);
   }
 };
 
