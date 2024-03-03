@@ -55,6 +55,8 @@ const login = async (page) => {
       if (value.length < 1 && process.env.LOGIN_TO_ALI) {
         await AliexpressLogin(page);
       }
+
+      await sleep(1000);
     } catch (error) {
       if (process.env.LOGIN_TO_ALI) await AliexpressLogin(page);
     }
