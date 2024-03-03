@@ -1,6 +1,6 @@
 import scrape from "./../index.js";
 
-scrape("3256806058582491", {
+scrape("2255800123371957", {
   reviewsCount: 0,
 })
   .then((productData) => {
