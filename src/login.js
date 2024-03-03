@@ -31,7 +31,9 @@ const AliexpressLogin = async (page) => {
   await sleep(10000);
 
   const cookies = await page.cookies();
-  fs.writeFileSync("./cookies.json", JSON.stringify(cookies, null, 2));
+  await fs.writeFile("./cookies.json", JSON.stringify(cookies, null, 2));
+
+  await sleep(500);
 };
 
 const login = async (page) => {
